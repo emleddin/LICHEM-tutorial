@@ -7,7 +7,8 @@ export SHELL = /bin/bash
 # Settings
 MAKEFILES=Makefile $(wildcard *.mk)
 JEKYLL_VERSION=3.8.5
-JEKYLL=bundle install --path .vendor/bundle && bundle update && bundle exec jekyll
+JEKYLL=bundle exec jekyll
+JEKYLL_ORIGIN=bundle install && bundle update && bundle exec jekyll
 PARSER=bin/markdown_ast.rb
 DST=_site
 
@@ -48,9 +49,17 @@ endif
 serve : lesson-md
 	${JEKYLL} serve
 
+## * first-serve      : install all the gems, render website, and run local server
+first-serve : lesson-md
+	${JEKYLL_ORIGIN} serve
+
 ## * site             : build website but do not run a server
 site : lesson-md
 	${JEKYLL} build
+
+## * first-site       : install all the gems, build site, but do not run server
+first-site : lesson-md
+	${JEKYLL_ORIGIN} serve
 
 ## * docker-serve     : use Docker to serve the site
 docker-serve :
