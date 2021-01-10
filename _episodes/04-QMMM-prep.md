@@ -1,6 +1,6 @@
 ---
 title: "QM/MM Structure Preparation"
-teaching: 0
+teaching: 60
 exercises: 0
 questions:
 - "???"

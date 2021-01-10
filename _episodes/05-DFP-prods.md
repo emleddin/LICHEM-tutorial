@@ -1,6 +1,6 @@
 ---
 title: "DFP Optimizations and Strategies for Building a Suitable Product"
-teaching: 0
+teaching: 60
 exercises: 0
 questions:
 - "???"

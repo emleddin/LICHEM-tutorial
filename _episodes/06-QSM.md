@@ -1,6 +1,6 @@
 ---
 title: "QSM: The Quantum String Method"
-teaching: 0
+teaching: 60
 exercises: 0
 questions:
 - "???"
