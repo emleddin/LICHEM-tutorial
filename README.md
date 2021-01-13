@@ -2,7 +2,9 @@
 
 [![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://swc-slack-invite.herokuapp.com/)
 
-This repository generates the corresponding lesson website from [The Carpentries](https://carpentries.org/) repertoire of lessons. 
+This repository generates the corresponding lesson website from [The Carpentries](https://carpentries.org/) repertoire of lessons.
+
+NEED TO FIX CLUSTERING BECAUSE DONE WITH 259/260, BUT SHOULD BE 259/261!!!
 
 ## Contributing
 
@@ -22,7 +24,7 @@ Look for the tag ![good_first_issue](https://img.shields.io/badge/-good%20first%
 
 ## Maintainer(s)
 
-Current maintainers of this lesson are 
+Current maintainers of this lesson are
 
 * FIXME
 * FIXME

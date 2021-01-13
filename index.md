@@ -12,7 +12,9 @@ QSM calculations, of performing QM/MM through LICHEM.
 
 > ## Prerequisites
 >
-> FIXME
+> It is expected that you have a basic understanding of Python3 before using
+> the tools in this tutorial.
+> Previous experience with TINKER is a plus.
 {: .prereq}
 
 {% include links.md %}

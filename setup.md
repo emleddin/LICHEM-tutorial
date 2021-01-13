@@ -80,8 +80,9 @@ installation of Python 3.
 - [Using `conda` to install packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-packages)
 
 The scripts we will use require the [`parmed`](https://github.com/ParmEd/ParmEd),
-[`numpy`](https://numpy.org/install/), and
-[`pandas`](https://pandas.pydata.org/getting_started.html)
+[`numpy`](https://numpy.org/install/),
+[`pandas`](https://pandas.pydata.org/getting_started.html), and
+[`MDAnalysis`](https://www.mdanalysis.org/pages/installation_quick_start/)
 packages to be installed.
 The Anaconda installation should include `numpy` and `pandas`.
 
@@ -89,6 +90,8 @@ The Anaconda installation should include `numpy` and `pandas`.
 $ conda install -c omnia parmed
 $ conda install numpy
 $ conda install pandas
+$ conda config --add channels conda-forge
+$ conda install mdanalysis
 ~~~
 {: .source}
 

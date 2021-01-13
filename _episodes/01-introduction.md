@@ -30,4 +30,16 @@ The LICHEM code is available on
 > ~~~
 {: .callout}
 
+## About QM/MM
+
+Eventually, I will talk about the theory behind QM/MM here.
+
+## About the Pseudobond Approach
+
+Eventually, I will talk about the pseudobond stuff here.
+
+## Selecting a QM Region
+
+Eventually, I will talk about how to select a QM region here.
+
 {% include links.md %}
