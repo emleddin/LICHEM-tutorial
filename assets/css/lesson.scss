@@ -23,6 +23,7 @@ $color-objectives:  #daee84 !default;
 $color-prereq:      #9cd6dc !default;
 $color-solution:    #ded4b9 !default;
 $color-testimonial: #fc8dc1 !default;
+$color-warning:     #eb6c6a !default;
 
 //----------------------------------------
 // Specialized code blocks.
@@ -121,6 +122,7 @@ $codeblock-padding: 5px !default;
 .prereq{ @include bkSetup($color-prereq, "\e124"); }
 .solution{ @include bkSetup($color-solution, "\e105"); }
 .testimonial{ @include bkSetup($color-testimonial, "\e143"); }
+.warning{ @include bkSetup($color-warning, "\e209"); }
 
 .callout h3,
 .challenge h3,
@@ -130,7 +132,8 @@ $codeblock-padding: 5px !default;
 .objectives h3,
 .prereq h3,
 .solution h3,
-.testimonial h3 {
+.testimonial h3,
+.warning h3 {
 font-size: 18px;
 }
 
@@ -144,6 +147,7 @@ font-size: 18px;
 .prereq       { background-color: #9cd6dc20; }
 .solution     { background-color: #ded4b94d; }
 .testimonial  { background-color: #fc8dc120; }
+.warning      { background-color: #f2dede20; }
 
 blockquote p {
     margin: 5px;

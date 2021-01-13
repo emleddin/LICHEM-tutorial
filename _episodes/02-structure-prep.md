@@ -416,6 +416,16 @@ protein's surface).
 These additions are saved in a "wet" or "solvated" structure.
 LEaP does accept comments in these files, using `#`.
 
+> ## Note about `solvatebox`
+>
+> Many people like to use `solvateoct` to generate a truncated octahedron,
+> which can save time by literally cutting corners, thus reducing the total
+> number of solvent ions.
+> If you are planning on performing QM/MM with LICHEM, it is __very important__
+> to use `solvatebox` because the truncated octahedron shape is not yet
+> supported.
+{: .callout}
+
 If you run this script on the provided files, it should work.
 However, if you were doing this on your own, you would likely encounter this
 error:

@@ -3,11 +3,12 @@ title: "QM/MM Structure Preparation"
 teaching: 60
 exercises: 0
 questions:
-- "???"
+- ""
 objectives:
 - "???"
 keypoints:
-- "???"
+- "File numbering is a really common trouble spot, so pay close attention to
+what you're working with and where."
 ---
 
 **Highlights**
@@ -24,5 +25,12 @@ keypoints:
 7. Build the product from the optimized reactant ([phase 5](05-DFP-prods/index.html))
 8. Compare the product and optimized reactant ([phase 5](05-DFP-prods/index.html))
 9. QSM ([phase 6](06-QSM/index.html))
+
+## Running a Single Point Energy Calculation
+
+```
+
+```
+{: .source}
 
 {% include links.md %}

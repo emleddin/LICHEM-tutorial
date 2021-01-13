@@ -1,0 +1,97 @@
+Generic Code
+------------
+~~~
+insert code here
+~~~
+{: .source}
+
+
+Image with caption
+------------------
+<a href="{{ page.root }}/fig/FIXME">
+  <img src="{{ page.root }}/fig/FIXME"
+  alt="FIXME"/>
+</a>
+<p>
+    <em>CAPTION HERE
+    doi: ,
+	RCSB PDB.</em>
+</p>
+
+
+href in HTML (Captions)
+----------------------
+<a href="FIXME-website-url">text-FIXME</a>
+
+
+Text/code blocks
+----------------
+> ## FIXME-heading
+>
+> This is text. Above is a required blank line.
+{: .FIXME}
+
+> ## FIXME-heading
+>
+> This is text. Above is a required blank line. Below is too
+>
+> > ## FIXME-enclosed-heading
+> > 
+> > This is text again. It could be the start of a code block.
+> > ~~~
+> > insert code here
+> > ~~~
+> > {: .FIXME-code-box}
+> {: .FIXME-inner-box}
+{: .FIXME-whole-box}
+
+Exercise       {: .challenge}
+Solution:      {: .solution}
+Generic Code:  {: .source}
+Output:        {: .output}
+Python:        {: .language-python}
+Bash:          {: .language-bash}
+Testimonial:   {: .testimonial}
+Prerequisite:  {: .prereq}
+Objectives:    {: .objectives}
+Discussion:    {: .discussion}
+Keypoints:     {: .keypoints}
+Checklist:     {: .checklist}
+Aside/comment: {: .callout}
+
+
+Page Needs
+----------
+---
+title: "FIXME"
+teaching: 0
+exercises: 0
+---
+
+{% include links.md %}
+
+Heading options
+questions:
+objectives:
+keypoints:
+prereq:
+
+
+Units
+-----
+Angstrom: &#8491;
+kcal per mol: kcal mol<s>-1</s>
+Not equals: &#8800;
+Plus minus: &#177;
+Right arrow: &rarr;
+Degree: &deg;
+Registered: &reg;
+Smiley (HTML): &#x1F603;
+
+
+Link section
+------------
+[shown-text](#page-url-goes-here)
+[link text]({{ page.root }}{% link _episodes/dd-subject.md %})
+
+Only change dd-subject.md name in second above
