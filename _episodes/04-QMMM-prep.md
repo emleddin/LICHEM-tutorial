@@ -464,9 +464,9 @@ lichem -n 20 -x xyzfile.xyz -c connect.inp -r regions.inp -o ${tag}.xyz -l ${tag
 {: .language-bash}
 
 If you have a positive energy, kill the job.
-If it's in the QM region, something went wrong with the QM portion--debug that.
-If it's in the MM region, something went wrong with the MM portion--debug that.
-If it's in both, something catastrophic happened and everything failed--start
+- If it's in the QM region, something went wrong with the QM portion--debug that.
+- If it's in the MM region, something went wrong with the MM portion--debug that.
+- If it's in both, something catastrophic happened and everything failed--start
 debugging in the QM.
 
 {% include links.md %}

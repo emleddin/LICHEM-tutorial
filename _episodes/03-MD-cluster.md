@@ -15,6 +15,8 @@ keypoints:
 - "An MD simulation can be broken down into 4 phases: minimization, heating,
 equilibration, and production."
 - "DBscan can be very finicky, but it is a better approach to clustering."
+- "Run k-means after DBscan. You can select the centroids from k-means as the
+random snapshots."
 ---
 
 **Highlights**
@@ -22,6 +24,10 @@ equilibration, and production."
 {:toc}
 
 ## Molecular Dynamics Background
+
+This where words would go, if I had them.
+
+## Analyzing Molecular Dynamics Simulations
 
 This where words would go, if I had them.
 
@@ -40,31 +46,31 @@ effort and testing to form clusters.
 has a great explanation of the different clustering algorithms.
 
 ```
-trajin /absolute/path/to/the/file/WT_protein_system_wat_imaged_1-50.nc
-trajin /absolute/path/to/the/file/WT_protein_system_wat_imaged_1-100.nc
-trajin /absolute/path/to/the/file/WT_protein_system_wat_imaged_1-100.nc
+trajin ../5Y2S_wat_imaged_1-50.nc
+#trajin ../path/to/other/stripped/trajectories.nc
 
 autoimage
 
-## PA-O3' Distance
-distance d1 :476@PA :457@O3' out WT_protein_sys_PaO_dist.dat
+## O-C Distance
+distance d1 :259@O :261@C out 5Y2S_OC_dist.dat
 
-## O3'-PA-O5' Angle
-angle a1 :457@O3' :476@PA :476@O5' out WT_protein_sys_OPO_angle.dat
+## O-C-O Angle
+## 2 kinds of OCO are possible!
+angle a1 :259@O :261@C :261@O1 out 5Y2S_OCO1_ang.dat
+angle a2 :259@O :261@C :261@O2 out 5Y2S_OCO2_ang.dat
 
 ## kdist test
-cluster C0 dbscan kdist 9 data d1,a1 sieve 10
+cluster C0 dbscan kdist 9 data d1,a1,a2 sieve 10
 
 ## DBSCAN based on PA-O distance and OPO angle
-cluster c1 dbscan minpoints 10 epsilon 2.2 data d1,a1 \
- pairdist WT_protein_sys_PaO_OPO_db_clust_pairs.dat \
+cluster c1 dbscan minpoints 25 epsilon 2.2 data d1,a1,a2 \
+ pairdist 5Y2S_OC_OCO_db_clust_pairs.dat \
  loadpairdist \
- info WT_protein_sys_PaO_OPO_db_clust_detail_info.dat \
- out WT_protein_sys_PaO_OPO_db_clustnum_v_time.dat \
- summary WT_protein_sys_PaO_OPO_db_clust_summary.dat \
- avgout WT_protein_sys_PaO_OPO_db_clust avgfmt pdb \
- cpopvtime WT_protein_sys_PaO_OPO_db_popvtime.dat
-#sieve 10 random
+ info 5Y2S_OC_OCO_db_clust_detail_info.dat \
+ out 5Y2S_OC_OCO_db_clustnum_v_time.dat \
+ summary 5Y2S_OC_OCO_db_clust_summary.dat \
+ avgout 5Y2S_OC_OCO_db_clust avgfmt pdb \
+ cpopvtime 5Y2S_OC_OCO_db_popvtime.dat
 ```
 {: .source}
 
@@ -92,9 +98,9 @@ To do this more easily, we use a `grep` command to separate out the list of
 frames into their individual clusters.
 
 ```bash
-$ grep " 0" WT_protein_system_H11_rms_clustnum_v_time.dat > clust_num_0.txt
-$ grep " 1" WT_protein_system_H11_rms_clustnum_v_time.dat > clust_num_1.txt
-$ grep " 2" WT_protein_system_H11_rms_clustnum_v_time.dat > clust_num_2.txt
+$ grep " 0" 5Y2S_OC_OCO_db_clustnum_v_time.dat > clust_num_0.txt
+$ grep " 1" 5Y2S_OC_OCO_db_clustnum_v_time.dat > clust_num_1.txt
+$ grep " 2" 5Y2S_OC_OCO_db_clustnum_v_time.dat > clust_num_2.txt
 ...
 ```
 
@@ -104,10 +110,10 @@ You don't have to use Python, it's just one way we've chosen to highlight.
 
 ```python
 import pandas as pd
-clust = pd.read_csv("clust_num_1.txt", header=None, delim_whitespace=True)
+clust = pd.read_csv("clust_num_0.txt", header=None, delim_whitespace=True)
 test = clust.loc[:,0].values.tolist()
 test2 = ''.join(str(i)+"," for i in test)
-f=open("out_clust1.txt","w+")
+f=open("out_clust0.txt","w+")
 f.write(test2)
 f.close()
 ```
@@ -149,12 +155,12 @@ go
 trajin 5Y2S_wat_subclust_num_0.nc
 
 ## O-C Distance
-distance d1 :259@O :260@C
+distance d1 :259@O :261@C
 
 ## O-C-O Angle
 ## 2 kinds of OCO are possible!
-angle a1 :259@O :260@C :260@O1
-angle a2 :259@O :260@C :260@O2
+angle a1 :259@O :261@C :261@O1
+angle a2 :259@O :261@C :261@O2
 
 ## ## 10 clusters of k-means based on OC distance and OCO angles
 cluster coco kmeans clusters 10 data d1,a1,a2 \
@@ -199,11 +205,17 @@ is random!
 Use the `5Y2S_wat_fix.prmtop` file for the topology information.
 
 ```
-## Read in all the files used for to create the stripped trajectories to ensure
-## The proper frames are pulled
-trajin /absolute/path/to/the/file/WT_protein_system_wat_imaged_1-50.nc
-trajin /absolute/path/to/the/file/WT_protein_system_wat_imaged_1-100.nc
-trajin /absolute/path/to/the/file/WT_protein_system_wat_imaged_1-100.nc
+## Read in all the files used for to create the stripped trajectories in the
+## exact same order to ensure that the proper frames are pulled
+trajin /absolute/path/to/the/file/for/replicate1/5Y2S_wat_md1.mdcrd
+trajin /absolute/path/to/the/file/for/replicate1/5Y2S_wat_md2.mdcrd
+
+trajin /absolute/path/to/the/file/for/replicate2/5Y2S_wat_md1.mdcrd
+trajin /absolute/path/to/the/file/for/replicate2/5Y2S_wat_md2.mdcrd
+
+trajin /absolute/path/to/the/file/for/replicate3/5Y2S_wat_md1.mdcrd
+trajin /absolute/path/to/the/file/for/replicate3/5Y2S_wat_md2.mdcrd
+## ... continue
 
 autoimage
 
