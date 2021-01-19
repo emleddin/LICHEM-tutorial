@@ -38,6 +38,7 @@ for getting started with computational simulations.
 ```
 ATOM      1  N   HIS     4      30.098   2.954   7.707  1.00  0.00           N
 ```
+{: .file}
 The records start with `ATOM` or `HETATM`.
 Next is the atom index or atom ID number.
 Each atom index is unique to that atom in a simulation, but before the structure
@@ -192,6 +193,7 @@ REMARK   5              2161 C in CO2 303
 REMARK   5              2162 O1 in CO2 303
 REMARK   5              2163 O2 in CO2 303
 ```
+{: .file}
 
 This means that PROPKA couldn't process the `ZN` or `CO2` residues.
 Because of that, they weren't included in the PQR, and thus were not in the
@@ -213,10 +215,12 @@ The `5Y2S_clean.pdb` ZN line
 ```
 HETATM 2157 ZN    ZN A 301      14.442   0.173  15.262  1.00  3.61          ZN  
 ```
+{: .file}
 becomes
 ```
 ATOM   2157  ZN   ZN   301      14.442   0.173  15.262  1.00  0.00          ZN
 ```
+{: .file}
 You can leave the atom ID (`2157`) as-is.
 Further programs will renumber everything.
 
@@ -396,6 +400,7 @@ savepdb c 5Y2S_wat.pdb
 saveamberparm c 5Y2S_wat.prmtop 5Y2S_wat_init0.rst
 quit
 ```
+{: .file}
 
 First, the relevant force field information is sourced, and any new atom types
 are defined.

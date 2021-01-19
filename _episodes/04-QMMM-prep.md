@@ -1,11 +1,17 @@
 ---
 title: "QM/MM Structure Preparation"
 teaching: 60
-exercises: 0
+exercises: 60
 questions:
-- ""
+- "How is a Tinker XYZ file different from a regular XYZ file?"
+- "How do I convert a PDB file to a Tinker XYZ file?"
+- "How do I write a Gaussian BASIS file?"
+- "How do I use LICHEM for a single point energy calculation?"
 objectives:
-- "???"
+- "Learn about the different files required for a LICHEM calculation."
+- "Modify a Python script with the proper QM region to generate the
+`regions.inp` file."
+- "Submit your first single point energy calculation with LICHEM."
 keypoints:
 - "Parameters are, and always be, the downfall of the computational chemist."
 - "File numbering is a really common trouble spot, so pay close attention to
