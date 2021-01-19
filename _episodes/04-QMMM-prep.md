@@ -34,10 +34,17 @@ what you're working with and where."
 ## The Trials ~~and Tribulations~~ of PDB to XYZ
 
 TINKER uses a specific type of XYZ file, aptly referred to as a TINKER XYZ.
+The first line contains the total number of atoms in the file
+(and sometimes a comment).
+Any following lines start with the atom number, the atom name, the XYZ
+coordinates, the Tinker atom type, and any atoms that that atom is connected to.
 
 ```
-EXAMPLE LINE
+43380
+     1  N       22.109000   -3.927000   -6.090000     1       2       3       4       5
+     2  H1      22.156000   -4.914000   -5.880000     2       1
 ```
+{: .file}
 
 You need to start with a Tinker XYZ file to build the relevant LICHEM XYZ and
 connect files.
@@ -196,11 +203,13 @@ ATOM   4054  OXT LYS   257     -20.102 -10.326  14.057  1.00  0.00           O
 ATOM   4055 ZN   ZN6   258       3.179  -0.916  -1.326  1.00  0.00          ZN
 ATOM   4056  H1  WT1   259       5.491   0.309  -0.943  1.00  0.00           H
 ```
+{: .file}
 
 Our parameter file also doesn't look particularly alarming.
 ```
 atom        435  38    ZN    "ZN6 ZN"                         30     65.41    0 !! GUESSED CONNECTION
 ```
+{: .file}
 
 For some reason, it just doesn't like the `ZN6`, likely due to an internal
 attempt at removing the final number to search for matches.
@@ -227,10 +236,12 @@ In this approach, we change:
 ```
   4055  ZN       3.179000   -0.916000   -1.326000     0 ATOM TYPE NOT FOUND
 ```
+{: .file}
 to
 ```
   4055  ZN       3.179000   -0.916000   -1.326000     435
 ```
+{: .file}
 in the Tinker XYZ that the script created.
 
 ## Checking the XYZ with `analyze`
@@ -248,6 +259,7 @@ This key file only needs to contain one line (for now).
 ```
 parameters 5Y2S_TINKER_params.prm
 ```
+{: .file}
 
 After you've created the `tinker.key`, you can run `analyze`.
 ```
@@ -301,6 +313,7 @@ atom        345  32    N5    "HD4 NE2"                         7     14.01    2 
 atom        362  33    N6    "HD5 NE2"                         7     14.01    2 !! GUESSED CONNECTION
 atom        375  34    N7    "HE2 ND1"                         7     14.01    2 !! GUESSED CONNECTION
 ```
+{: .file}
 [Note: you can remove the `!! GUESSED CONNECTION` if you want, since it's just
 a comment anyway.]
 
@@ -311,6 +324,7 @@ atom        439  41    c1    "CO2 C"                           6     12.01    2 
 atom        440  42    o     "CO2 O1"                          8     16.00    1 !! GUESSED CONNECTION
 atom        441  42    o     "CO2 O2"                          8     16.00    1 !! GUESSED CONNECTION
 ```
+{: .file}
 
 The undefined water parameters also make sense, as stated in the README for
 the `generate_TINKER_parameters.py` script.
@@ -342,6 +356,10 @@ Charge-Charge                       -143593.0130      940839611
 
 Great! No problems this time, and a nice, negative Charge-Charge energy.
 Huzzah!!!!!!
+Now go back to that fixed parameter file and remove the `!! GUESSED CONNECTION`
+comments (a string replacement, like `%s/!! GUESSED CONNECTION//g` will work fine).
+These end-of-line comments can cause a segmentation fault when doing file
+conversion in LICHEM.
 
 ## Building `regions.inp` and Converting to LICHEM
 
@@ -392,28 +410,102 @@ numbering (which start at 1), but **you must** use the proper syntax for each.
 It is *incredibly* easy to get the numbers wrong.
 
 The table below contains the assignments for the QM atoms to use in the script.
+In this structure, `HN` refers to `H`, but is shown as `HN` because
+other preparation programs name the H on the backbone nitrogen accordingly.
 It uses the atom numbers within the Tinker XYZ/PDB.
 
-|                       | QM Residue(s)  | Number    | Pseudobond (CA, CB) | Boundary                  | Charge |
-|-----------------------|----------------|-----------|---------------------|---------------------------|--------|
-|                       | XYZ/PDB number |           | XYZ/PDB number      | XYZ/PDB number            |        |
-| ZN6 (4055)            | 4055           | 1         |                     |                           | 2+     |
-| HD4 (1405 - 1421)     | 1409 - 1419    | 11        | CA 1407             | C, HA, N, O, HN           | 0      |
-| HD5 (1442 - 1458)     | 1446 - 1456    | 11        | CA 1444             | C, HA, N, O, HN           | 0      |
-| HE2 (1789 - 1805)     | 1793 - 1803    | 11        | CA 1791             | C, HA, N, O, HN           | 0      |
-| WT1 (4056 - 4058)     | 4056 - 4058    | 3         | -                   | -                         | 0      |
-| CO2 (4062 - 4064)     | 4062 - 4064    | 3         | -                   | -                         | 0      |
-| HID 61 (940 - 956)    | 944 - 954      | 11        | CA 942              | C, HA, N, O, HN           | 0      |
-| GLU 103 (1574 - 1588) | 1581 - 1586    | 6         | CB 1578             | C, HA, N, O, HN, HB2, HB3 | 1-     |
-| WAT                   | ???            | WAT       |                     |                           | 0      |
-|                       | Total:         | 114 + WAT | 5                   | 27                        | 1+     |
+|                       | QM Residue(s)  | Number   | Pseudobond (CA, CB) | Boundary                                                             | Charge |
+|-----------------------|----------------|----------|---------------------|----------------------------------------------------------------------|--------|
+|                       | XYZ/PDB number |          | XYZ/PDB number      | XYZ/PDB number                                                                       |        |
+| HID 61 (940 - 956)    | 944 - 954      | 11       | CA 942              | C  (955), HA  (943), N  (940), O  (956), HN  (941)                   | 0      |
+| HD4 (1405 - 1421)     | 1409 - 1419    | 11       | CA 1407             | C (1420), HA (1408), N (1405), O (1421), HN (1406)                   | 0      |
+| HD5 (1442 - 1458)     | 1446 - 1456    | 11       | CA 1444             | C (1457), HA (1445), N (1442), O (1458), HN (1443)                   | 0      |
+| GLU 103 (1574 - 1588) | 1581 - 1586    | 6        | CB 1578             | C (1587), HA (1577), N (1574), O (1588), HN (1575), CA (1576), HB2 (1579), HB3 (1580) | 1-     |
+| HE2 (1789 - 1805)     | 1793 - 1803    | 11       | CA 1791             | C (1804), HA (1792), N (1789), O (1805), HN (1790)                   | 0      |
+| ZN6 (4055)            | 4055           | 1        |                     |                                                                      | 2+     |
+| WT1 (4056 - 4058)     | 4056 - 4058    | 3        | -                   | -                                                                    | 0      |
+| CO2 (4062 - 4064)     | 4062 - 4064    | 3        | -                   | -                                                                    | 0      |
+| WAT                   | ???            | WAT      |                     |                                                                      | 0      |
+|                       | Total:         | 57 + WAT | 5                   | 28                                                                   | 1+     |
 
+Once we know what our QM, pseudobond, and boundary atoms are, we can modify
+that function.
+```
+def select_QM(system, shell_center):
+    ## My QM Atoms
+    QM_HID_61  = system.select_atoms("bynum 944:954")
+    QM_HD4_91  = system.select_atoms("bynum 1409:1419")
+    QM_HD5_93  = system.select_atoms("bynum 1446:1456")
+    QM_GLU_103 = system.select_atoms("bynum 1581:1586")
+    QM_HE2_116 = system.select_atoms("bynum 1793:1803")
+    QM_ZN6_258 = system.select_atoms("resnum 258")
+    QM_WT1_259 = system.select_atoms("resnum 259")
+    QM_CO2_261 = system.select_atoms("bynum 4062:4064")
+    QM_WAT = system.select_atoms("(around 4 resnum 258) or (around 4 resnum 61) and (resname WAT)")
+    QM_WAT = QM_WAT.residues.atoms
+    #
+    ## Combine the QM atoms. Consider using `|` instead of '+' to make `all_QM`
+    ## ordered with a single copy of an atom.
+    all_QM = QM_HID_61 | QM_HD4_91 | QM_HD5_93 | QM_GLU_103 | QM_HE2_116 | QM_ZN6_258 | \
+    QM_WT1_259 | QM_CO2_261 | QM_WAT
+    #
+    ## My Pseudo Atoms
+    PB_HID_61  = system.select_atoms("resnum 61 and name CA")
+    PB_HD4_91  = system.select_atoms("resnum 91 and name CA")
+    PB_HD5_93  = system.select_atoms("resnum 93 and name CA")
+    PB_GLU_103 = system.select_atoms("resnum 103 and name CB")
+    PB_HE2_116 = system.select_atoms("resnum 116 and name CA")
+    #
+    ## Combine the PB atoms. Consider using `|` instead of '+' to make `all_PB`
+    ## ordered with a single copy of an atom.
+    all_PB = PB_HID_61 | PB_HD4_91 | PB_HD5_93 | PB_GLU_103 | PB_HE2_116
+    #
+    ## My Boundary Atoms
+    BA_HID_61  = system.select_atoms("resnum 61 and (name N or name H or name HA \
+     or name C or name O)")
+    BA_HD4_91  = system.select_atoms("resnum 91 and (name N or name H or name HA \
+     or name C or name O)")
+    BA_HD5_93 = system.select_atoms("resnum 93 and (name N or name H or name HA \
+     or name C or name O)")
+    BA_GLU_103 = system.select_atoms("resnum 103 and (name N or name H or name HA \
+     or name C or name O or name CA or name HB2 or name HB3)")
+    BA_HE2_116 = system.select_atoms("resnum 116 and (name N or name H or name HA \
+     or name C or name O)")
+    #
+    ## Combine the BA atoms. Consider using `|` instead of '+' to make `all_BA`
+    ## ordered with a single copy of an atom.
+    all_BA = BA_HID_61 | BA_HD4_91 | BA_HD5_93 | BA_GLU_103 | BA_HE2_116
+    #
+    ## Combine the BA atoms. Consider using `|` instead of '+' to make `all_BA`
+    ## ordered with a single copy of an atom.
+    all_BA = BA_HID_61 | BA_HD4_91 | BA_HD5_93 | BA_GLU_103 | BA_HE2_116
+    #
+    print("There are {} QM, {} pseudobond, and {} boundary atoms.\n".format( \
+     len(all_QM), len(all_PB), len(all_BA)))
+    #
+    ...
+```
+{: .language-python}
+
+Another area we likely want to modify is the `make_regions(...)` function.
+That function is what is used to write out the `regions.inp_backup` file, and
+has some presets in there, such as the amount of memory used (`QM_memory`),
+`QM_charge` and `QM_spin`.
+If you're only setting up this single frame, it's alright if you leave it
+as the preset in the script, as long as you modify the `regions.inp` file
+before you use it for your calculation.
+If you're setting up multiple frames, typically you'll figure this out for one
+frame, modify the script, and then copy it for any remaining snapshots that
+need to be prepared.
+
+
+After modification, you can run the script.
 ```
 $ python3 create_reg.py
 ```
 {: .language-bash}
 
-This file will create files named `regions.inp_backup` and `BASIS_list.txt`.
+This script will create files named `regions.inp_backup` and `BASIS_list.txt`.
 The reason for naming the `regions.inp` file with `_backup` is because running
 the LICHEM conversion will replace any existing files named `connect.inp`,
 `regions.inp`, or `xyzfile.xyz` in the current directory with the newly
@@ -425,6 +517,7 @@ Pseudobond_atoms: 0
 Boundary_atoms: 0
 Frozen_atoms: 0
 ```
+{: .file}
 getting rid of all the hard work you went through to create it!
 
 To actually convert the Tinker XYZ, we use:
@@ -435,21 +528,129 @@ $ lichem -convert -t 5Y2S_subclust_c0_frame_6.xyz -k tinker.key > conversion-1.l
 
 Because we're using Gaussian, we need a `BASIS` file.
 We can use another LICHEM command to create a skeleton `BASIS` file.
+However, depending on the version of LICHEM that you're using, `g16` may
+not be recognized as a keyword.
+So, copy the regions file we made using `create_reg.py`
 ```
-$ lichem -convert -b regions.inp
+cp regions.inp_backup regions.inp_BASIS
 ```
 {: .language-bash}
-This `BASIS` file can be modified using the information in `BASIS_list.txt`,
-which maps the atoms between VMD numbering, PDB numbering, and the Gaussian
-`BASIS` numbering.
+and change the `QM_type` to `Gaussian`.
+This should be semi-commented out below it, but the syntax for a comment cannot
+have spaces, whereas keyword searches do need a space after the colon.
+Thus, the toggled version would resemble:
+```
+!QM_type:g16
+QM_type: Gaussian
+```
+{: .file}
+
+You can then create the `BASIS` file using this file.
+```
+$ lichem -convert -b regions.inp_BASIS
+```
+{: .language-bash}
+
+For the `BASIS` file, the numbers are based on the numerical order of what is
+listed in QM and pseudobonds sections of `regions.inp`.
+This means that if you have numbers `1123 1433 1353` listed in different places
+in the file, 1123 = 1, 1353 = 2, and 1433 = 3.
+
+> ## Get Your Numbers Straight
+>
+> - **VMD**: Starts atom numbering at zero (0).
+> - **LICHEM**: Starts atom numbering at zero (0).
+> - **BASIS**: Starts at one (1), but counts using only the atoms identified in the
+> QM, PB, and BA sections of the `regions.inp` file.
+> - **TINKER**: Starts atom numbering at one (1).
+> - **AMBER**: Starts atom numbering at one (1).
+{: .callout}
+
+To make modifying this file easier, `BASIS_list.txt` maps the atoms between
+VMD numbering, PDB numbering, and the Gaussian `BASIS` numbering.
 All of this helps us ensure that the atoms we want to treat with a higher
 basis, or that need have the pseudopotential atoms applied, are correct!
 
-!!!!! DO THE BASIS SECTION
+As-is, the last few lines of this file look like:
+```
+78 79 80 81 82 83 84 85  0
+GEN
+****
+86 87 88 89 90 91 92 93  0
+GEN
+****
+7 19 31 43 50  0
+[PB basis set]
+****
+
+7 19 31 43 50  0
+[PB pseudopotentials]
+```
+{: .file}
+
+Throughout the file, `GEN` is used to mean "General BASIS".
+For this tutorial, we will be using `6-31G*` for our QM region and `6-31+G(d,p)`
+for any reactive atoms in the QM region.
+LICHEM can't guess what our reactive atoms are, so we need to pull them out
+from the numeric list that it sorts atoms into and specify them separately.
+Formatting is **very important** in this file, and follows the pattern of
+any relevant numbers, two spaces, a zero, followed by a newline with the basis
+set, followed by a newline with four asterisks.
+```
+#1 #2 #3__0
+GEN
+****
+```
+{: .file}
+
+Here, we want to make sure the atoms from residue CO2 and WT1, as well as the
+metal, are treated with a higher basis.
+Luckily for us, these are all sequential, so we need to select 56-62.
+```
+54 55 56  0
+6-31G*
+****
+63 64 65 66 67 68 69  0
+6-31G*
+****
+57 58 59 60 61 62  0
+6-31+G(d,p)
+****
+```
+{: .file}
+
+It doesn't matter if they're in sequential order in the file--what matters is
+that each atom is only listed once.
+
+The pseudopotentials for the pseudobond atoms also need to be modified.
+```
+1 13 25 37 44  0 STO-2G
+SP 2 1.00
+0.9034 1.00 1.00
+0.21310 1.90904 0.57864
+****
+
+1 13 25 37 44  0
+try1 1 2
+S Component
+1
+1 7.75 16.49
+P
+1
+1 1.0 0.0
+
+```
+{: .file}
+
+After this, you should be ready for a single point energy calculation.
+You're so close!
 
 ## Running a Single Point Energy Calculation
 
-
+Before you run a single point calculation, you should create a shell file to
+run the LICHEM job (or some sort of queue script).
+In the below example, 20 processors were used to run LICHEM, and a variable
+named `tag` was created to name the output files.
 ```
 tag=5Y2S_subclust_c0_frame_6_out
 
@@ -463,10 +664,51 @@ lichem -n 20 -x xyzfile.xyz -c connect.inp -r regions.inp -o ${tag}.xyz -l ${tag
 ```
 {: .language-bash}
 
-If you have a positive energy, kill the job.
+After that script is made, verify that you have the following files in the
+run directory:
+- `5Y2S_TINKER_params.prm`
+- `BASIS`
+- `connect.inp`
+- `regions.inp`
+- `run-serial.sh` (or whatever the run script is named)
+- `tinker.key`
+- `xyzfile.xyz`
+
+You can then submit that job through whatever means you are accustomed to.
+Once it starts, you should check it to make sure it's running properly.
+You can do this through `watch tail 5Y2S_subclust_c0_frame_6_out.log`.
+If you have a positive energy at any point, kill the job.
 - If it's in the QM region, something went wrong with the QM portion--debug that.
 - If it's in the MM region, something went wrong with the MM portion--debug that.
 - If it's in both, something catastrophic happened and everything failed--start
 debugging in the QM.
+
+If everything worked properly, you should get this in your
+`5Y2S_subclust_c0_frame_6_out.log` file:
+```
+Single-point energy:
+
+  QM energy: -4335.8971333871 a.u.
+  MM energy: -209.73460474142 a.u.
+  QMMM energy: -4545.6317381286 a.u. | -2852426.9841024 kcal
+```
+{: .output}
+
+> ## Version Note
+>
+> An older version of LICHEM would look like:
+> ```
+> Single-point energy:
+>
+>  QM energy: -117985.76643379 eV
+>  MM energy: -5707.1690879283 eV
+>  QMMM energy: -123692.93552171 eV -4545.6317381286 a.u.
+> ```
+> {: .output}
+{: .callout}
+
+It's party time! You did your first single point energy calculation!!!
+Seriously, it took a lot of work to get here, and you should celebrate.
+Go get yourself a calming beverage and come back to the tutorial.
 
 {% include links.md %}

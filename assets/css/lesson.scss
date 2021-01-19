@@ -11,6 +11,7 @@ $color-brand:       #2b3990 !default;
 // code boxes
 $color-error:       #bd2c00 !default;
 $color-output:      #303030 !default;
+$color-file:        #000000 !default;
 $color-source:      #360084 !default;
 
 // blockquotes
@@ -40,6 +41,7 @@ $color-warning:     #eb6c6a !default;
 .error  { @include cdSetup($color-error); }
 .output { @include cdSetup($color-output); }
 .source { @include cdSetup($color-source); }
+.file   { @include cdSetup($color-file); }
 
 .bash, .language-bash     { @include cdSetup($color-source); }
 .make, .language-make     { @include cdSetup($color-source); }
@@ -50,6 +52,7 @@ $color-warning:     #eb6c6a !default;
 
 .error::before,
 .output::before,
+.file::before,
 .source::before,
 .bash::before, .language-bash::before,
 .make::before, .language-make::before,
@@ -65,6 +68,7 @@ $color-warning:     #eb6c6a !default;
 
 .error::before  { background-color: #ffebe6; content: "Error"; }
 .output::before { background-color: #efefef; content: "Output"; }
+.file::before { background-color: #f0f0f0; content: "File"; }
 .source::before { content: "Code"; }
 .bash::before, .language-bash::before { content: "Bash"; }
 .make::before, .language-make::before { content: "Make"; }
